@@ -112,3 +112,6 @@ html[theme_like="light"] {
 
 ## ⚠️ Uses LocalStorage
 **You might have to mention it in your Cookie Banner**
+
+## Looking for something simpler?
+Check out [darkmode.js](https://github.com/SchloesserJonas/darkmode.js)!

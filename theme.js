@@ -79,6 +79,9 @@ module.exports = {
     },
 
     set(theme_uid) {
+        if(!Object.keys(themes).includes(theme_uid)) {
+            return
+        }
         document.documentElement.setAttribute('theme', theme_uid)
         if(themes[theme_uid].like != undefined) {
             document.documentElement.setAttribute('theme_like', themes[theme_uid].like)

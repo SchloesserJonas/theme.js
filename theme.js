@@ -23,24 +23,29 @@ function iat(theme) {
     if(theme.iat == undefined) {
         return true
     }
-    if(new Date((theme.iat.split('/').length == 3 ? parseInt(theme.iat.split('/')[0]) : new Date().getFullYear()), parseInt(theme.iat.split('/').slice(-2))-1, parseInt(theme.iat.split('/').slice(-1))) < new Date()) {
-        return true
-    } else {
+    if(_toDate(theme.iat) > new Date()) {
         return false
     }
+    return true
 }
 
 function exp(theme) {
     if(theme.exp == undefined || theme.exp == 'never') {
         return false
     }
-    if(new Date((theme.exp.split('/').length == 3 ? parseInt(theme.exp.split('/')[0]) : new Date().getFullYear()), parseInt(theme.exp.split('/').slice(-2))-1, parseInt(theme.exp.split('/').slice(-1))) < new Date()) {
+    if(_toDate(theme.exp) < new Date()) {
+        if(_toDate(theme.iat) > _toDate(theme.exp)) {
+            return false
+        }
         return true
-    } else {
-        return false
     }
+    return false
 }
 
+function _toDate(date) {
+    if(date.split("/").length == 2) return new Date(new Date().getFullYear() + "/" + date)
+    if(date.split("/").length == 3) return new Date(date)
+}
 
 module.exports = {
     load() {
@@ -63,19 +68,18 @@ module.exports = {
     getThemes() {
         available_themes = []
         for(theme in themes) {
-            if(iat(themes[theme]) && !exp(themes[theme])) {
-                available_themes.push(themes[theme])
+            theme = themes[theme]
+            if(iat(theme) && !exp(theme)) {
+                theme.iat = _toDate(theme.iat)
+                theme.exp = _toDate(theme.exp)
+                available_themes.push(theme)
             }
         }
         return available_themes
     },
 
     getAllThemes() {
-        all_themes = []
-        for(theme in themes) {
-            all_themes.push(themes[theme])
-        }
-        return all_themes
+        return themes
     },
 
     set(theme_uid) {
